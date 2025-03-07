@@ -9,8 +9,8 @@ typedef struct {
 
 unsigned int particleSystemsCount = 0;
 ParticleSystem particleSystems[MAX_PARTICLE_SYSTEMS];
-
 Particle particlePool[MAX_PARTICLES] = {};
+
 void InitialiseSparks(Vector2 pos) {
     for (int i = 0; i < MAX_PARTICLES; i++)
     {
@@ -24,41 +24,40 @@ void InitialiseSparks(Vector2 pos) {
     }
     // Init ParticleSystems
     for (int i = 0; i < MAX_PARTICLE_SYSTEMS; i++) {
-        particleSystems[i].position = (Vector2){-1, -1}; 
-        printf("Initialising i: %d\n", i);
+        particleSystems[i].position = (Vector2){-1, -1};
     }
 }
 
 void AddToParticleSystem(Vector2 position, ParticleType type) {
-    ParticleSystem newParticleSystem;
-    memcpy(newParticleSystem.systemParticlePool, particlePool, sizeof(Particle) * MAX_PARTICLES); // replace newParticleSystem.particlePool with particlePool. This is probably pretty unsafe... but i dont care
-    newParticleSystem.position = position;
-    newParticleSystem.type = type;
-
-    particleSystems[particleSystemsCount] = newParticleSystem;
-    particleSystemsCount += 1;
+    if (particleSystemsCount != MAX_PARTICLE_SYSTEMS) {
+        ParticleSystem newParticleSystem;
+        memcpy(newParticleSystem.systemParticlePool, particlePool, sizeof(Particle) * MAX_PARTICLES); // replace newParticleSystem.particlePool with particlePool. This is probably somehow unsafe... but i dont care
+        newParticleSystem.position = position;
+        newParticleSystem.type = type;
+    
+        particleSystems[particleSystemsCount] = newParticleSystem;
+        particleSystemsCount += 1;
+    }
 }
 
 void UpdateParticleSystem() {
     for (int i = 0; i < particleSystemsCount; i++) {
-        if (particleSystems[i].position.x > 0 && particleSystems[i].position.y > 0) {
-            Particle* pParticlePool = particleSystems[i].systemParticlePool;
-            for (int i = 0; i < MAX_PARTICLES; i++)
+        Particle* pParticlePool = particleSystems[i].systemParticlePool;
+        for (int i2 = 0; i2 < MAX_PARTICLES; i2++)
+        {
+            if (!pParticlePool[i2].active)
             {
-                if (!pParticlePool[i].active)
-                {
-                    pParticlePool[i].active = true;
-                    pParticlePool[i].velocity = (Vector2){GetRandomValue(-2, 2), GetRandomValue(-13, 8)};
-                    pParticlePool[i].alpha = 1.0f;
-                    pParticlePool[i].position = particleSystems[i].position;
-                    printf("New particle system at: (%f, %f)\n", particleSystems[i].position.x, particleSystems[i].position.y);
-                    i = MAX_PARTICLES;
-                }
+                pParticlePool[i2].active = true;
+                pParticlePool[i2].velocity = (Vector2){GetRandomValue(-2, 2), GetRandomValue(-13, 8)};
+                pParticlePool[i2].alpha = 1.0f;
+                pParticlePool[i2].position = particleSystems[i].position;
+                break; // break so that the pParticlePool[i] gets physics applied to it
             }
-    
-            float deltaTime = GetFrameTime();
-            for (int i = 0; i < MAX_PARTICLES; i++)
-            {
+        }
+
+        float deltaTime = GetFrameTime(); // time between current and previous frame
+        for (int i = 0; i < MAX_PARTICLES; i++)
+        {           
                 if (pParticlePool[i].active)
                 {
                     if (pParticlePool[i].position.y < screenHeight - 4) {
@@ -70,20 +69,20 @@ void UpdateParticleSystem() {
                     pParticlePool[i].alpha -= 0.01f;
     
                     if (pParticlePool[i].alpha <= 0.0f) pParticlePool[i].active = false; 
-                }
             }
-    
-            
-            // Draw active particles
-            for (int i = 0; i < MAX_PARTICLES; i++)
-            {
-                if (pParticlePool[i].active) DrawRectangleV(pParticlePool[i].position, (Vector2){ 3, 3 }, pParticlePool[i].color);
-            }
+        }
+
+        
+        // Draw active particles
+        for (int i = 0; i < MAX_PARTICLES; i++)
+        {
+            if (pParticlePool[i].active) DrawRectangleV(pParticlePool[i].position, (Vector2){ 3, 3 }, pParticlePool[i].color);
         }
     }
 }
 
 void UpdateSparks() {
+    // reenable all inactive particles
     for (int i = 0; i < MAX_PARTICLES; i++)
     {
         if (!particlePool[i].active)
@@ -92,11 +91,11 @@ void UpdateSparks() {
             particlePool[i].velocity = (Vector2){GetRandomValue(-2, 2), GetRandomValue(-13, 8)};
             particlePool[i].alpha = 1.0f;
             particlePool[i].position = GetMousePosition();
-            i = MAX_PARTICLES;
+            break; // break so that the particlePool[i] gets physics applied to it
         }
     }
 
-    float deltaTime = GetFrameTime();
+    float deltaTime = GetFrameTime(); // time between current and previous frame
     for (int i = 0; i < MAX_PARTICLES; i++)
     {
         if (particlePool[i].active)

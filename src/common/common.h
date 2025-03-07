@@ -13,6 +13,7 @@ typedef enum ParticleType {
     PARTICLE_SMOKE
 } ParticleType;
 
+
 typedef struct {
     Vector2 position;
     Vector2 velocity;

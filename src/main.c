@@ -38,7 +38,7 @@ int main(void)
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(DARKGRAY);
+            ClearBackground((Color){16, 19, 23, 1});
 
             BeginBlendMode(blending);
             
@@ -48,7 +48,7 @@ int main(void)
 
             EndBlendMode();
 
-            DrawText("Particle System Simulator", 180, 20, 20, BLACK);
+            DrawText("Particle System Simulator", 180, 20, 20, RAYWHITE);
 
             DrawText("Additive Blending Enabled", 280, screenHeight - 40, 20, RAYWHITE);
 
