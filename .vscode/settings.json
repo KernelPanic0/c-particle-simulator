@@ -4,6 +4,7 @@
         "*.ndjson": "jsonl",
         "*.dbclient-js": "javascript",
         "sparks.h": "c",
-        "particle.h": "c"
+        "particle.h": "c",
+        "common.h": "c"
     }
 }

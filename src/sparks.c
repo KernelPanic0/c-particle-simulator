@@ -1,12 +1,20 @@
 #include "sparks.h"
-#include "common/particle.h"
-#include "common/common.h"
+#include "stdio.h"
+
+typedef struct {
+    Particle systemParticlePool[MAX_PARTICLES];
+    Vector2 position;
+    ParticleType type;
+} ParticleSystem;
+
+unsigned int particleSystemsCount = 0;
+ParticleSystem particleSystems[MAX_PARTICLE_SYSTEMS];
 
 Particle particlePool[MAX_PARTICLES] = {};
-void initialiseSparks() {
+void InitialiseSparks(Vector2 pos) {
     for (int i = 0; i < MAX_PARTICLES; i++)
     {
-        particlePool[i].position = (Vector2){ 0, 0 };
+        particlePool[i].position = pos;
         particlePool[i].velocity = (Vector2){ GetRandomValue(-2, 2), GetRandomValue(-13, 8)};
         particlePool[i].color = (Color){ 252, 157, 3, 255 };
         particlePool[i].alpha = 1.0f;
@@ -14,9 +22,68 @@ void initialiseSparks() {
         particlePool[i].rotation = (float)GetRandomValue(0, 360);
         particlePool[i].active = false;
     }
+    // Init ParticleSystems
+    for (int i = 0; i < MAX_PARTICLE_SYSTEMS; i++) {
+        particleSystems[i].position = (Vector2){-1, -1}; 
+        printf("Initialising i: %d\n", i);
+    }
 }
 
-void updateSparks() {
+void AddToParticleSystem(Vector2 position, ParticleType type) {
+    ParticleSystem newParticleSystem;
+    memcpy(newParticleSystem.systemParticlePool, particlePool, sizeof(Particle) * MAX_PARTICLES); // replace newParticleSystem.particlePool with particlePool. This is probably pretty unsafe... but i dont care
+    newParticleSystem.position = position;
+    newParticleSystem.type = type;
+
+    particleSystems[particleSystemsCount] = newParticleSystem;
+    particleSystemsCount += 1;
+}
+
+void UpdateParticleSystem() {
+    for (int i = 0; i < particleSystemsCount; i++) {
+        if (particleSystems[i].position.x > 0 && particleSystems[i].position.y > 0) {
+            Particle* pParticlePool = particleSystems[i].systemParticlePool;
+            for (int i = 0; i < MAX_PARTICLES; i++)
+            {
+                if (!pParticlePool[i].active)
+                {
+                    pParticlePool[i].active = true;
+                    pParticlePool[i].velocity = (Vector2){GetRandomValue(-2, 2), GetRandomValue(-13, 8)};
+                    pParticlePool[i].alpha = 1.0f;
+                    pParticlePool[i].position = particleSystems[i].position;
+                    printf("New particle system at: (%f, %f)\n", particleSystems[i].position.x, particleSystems[i].position.y);
+                    i = MAX_PARTICLES;
+                }
+            }
+    
+            float deltaTime = GetFrameTime();
+            for (int i = 0; i < MAX_PARTICLES; i++)
+            {
+                if (pParticlePool[i].active)
+                {
+                    if (pParticlePool[i].position.y < screenHeight - 4) {
+                        pParticlePool[i].position.y += pParticlePool[i].velocity.y;
+                        pParticlePool[i].position.x += pParticlePool[i].velocity.x;
+                        pParticlePool[i].velocity.y += gravity * deltaTime;
+                        pParticlePool[i].position.y += gravity/2;  
+                    }
+                    pParticlePool[i].alpha -= 0.01f;
+    
+                    if (pParticlePool[i].alpha <= 0.0f) pParticlePool[i].active = false; 
+                }
+            }
+    
+            
+            // Draw active particles
+            for (int i = 0; i < MAX_PARTICLES; i++)
+            {
+                if (pParticlePool[i].active) DrawRectangleV(pParticlePool[i].position, (Vector2){ 3, 3 }, pParticlePool[i].color);
+            }
+        }
+    }
+}
+
+void UpdateSparks() {
     for (int i = 0; i < MAX_PARTICLES; i++)
     {
         if (!particlePool[i].active)
@@ -42,7 +109,7 @@ void updateSparks() {
             }
             particlePool[i].alpha -= 0.01f;
 
-            if (particlePool[i].alpha <= 0.0f) particlePool[i].active = false;
+            if (particlePool[i].alpha <= 0.0f) particlePool[i].active = false; 
         }
     }
 
