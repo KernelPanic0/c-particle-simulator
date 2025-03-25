@@ -1,10 +1,10 @@
+#pragma once
 #include "raylib.h"
-#include "common/particle.h"
 #include "common/common.h"
-#include "stdlib.h"
+#include "common/particle.h"
 #include <string.h> // memcpy
 
-void InitialiseSparks(Vector2 pos);
+void InitSparks(Vector2 pos);
+void InitPhysics(Particle* pParticle, ParticleSystem* pParticleSystem);
+void ApplyPhysics(Particle* pParticle);
 void UpdateSparks();
-void AddToParticleSystem(Vector2 position, ParticleType type);
-void UpdateParticleSystem();

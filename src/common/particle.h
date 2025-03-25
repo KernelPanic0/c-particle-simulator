@@ -1,17 +1,16 @@
+#pragma once // include guard
 #include "raylib.h"
+#include "common.h"
 
-// enum ParticleType {
-//     PARTICLE_SPARKS,
-//     PARTICLE_FIRE
-// };
+typedef struct {
+    Particle systemParticlePool[MAX_PARTICLES];
+    Vector2 position;
+    ParticleType type;
+} ParticleSystem;
 
-// typedef struct {
-//     Vector2 position;
-//     Vector2 velocity;
-//     Color color;
-//     float alpha;
-//     float size;
-//     float rotation;
-//     enum ParticleType type;
-//     bool active;
-// } Particle;
+extern unsigned int particleSystemsCount;
+extern ParticleSystem particleSystems[MAX_PARTICLE_SYSTEMS];
+extern Particle particlePool[MAX_PARTICLES];
+
+void AddToParticleSystem(Vector2 position, ParticleType type);
+void UpdateParticleSystem();

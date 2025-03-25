@@ -3,6 +3,7 @@
 #include "stdlib.h"
 
 #include "sparks.h"
+#include "common/particle.h"
 #include "common/common.h"
 
 int main(void)
@@ -13,12 +14,11 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib particle system simulator e");
 
-
     int blending = BLEND_ADDITIVE;
 
     SetTargetFPS(200);
+    InitSparks((Vector2){ 0, 0 });
     // main update loop
-    InitialiseSparks((Vector2){ 0, 0 });
     while (!WindowShouldClose())    // detect window close button or ESC key
     {
         // Update
@@ -32,6 +32,8 @@ int main(void)
         {
             AddToParticleSystem(GetMousePosition(), PARTICLE_SPARKS);
         }
+
+
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -42,8 +44,11 @@ int main(void)
 
             BeginBlendMode(blending);
             
-            UpdateSparks();
 
+
+            // For sparks that follow your cursor
+            UpdateSparks();
+            // For sparks that have been placed down into a particle system
             UpdateParticleSystem();
 
             EndBlendMode();
