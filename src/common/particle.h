@@ -1,4 +1,4 @@
-#pragma once // include guard
+#pragma once // include guard 
 #include "raylib.h"
 #include "common.h"
 
@@ -12,5 +12,6 @@ extern unsigned int particleSystemsCount;
 extern ParticleSystem particleSystems[MAX_PARTICLE_SYSTEMS];
 extern Particle particlePool[MAX_PARTICLES];
 
+void InitParticleSystems();
 void AddToParticleSystem(Vector2 position, ParticleType type);
 void UpdateParticleSystem();

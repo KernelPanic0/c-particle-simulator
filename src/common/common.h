@@ -1,5 +1,7 @@
 #pragma once // include guard
 #include "raylib.h"
+#include <stdlib.h>
+#include <time.h>
 
 extern const int screenWidth;
 extern const int screenHeight;
@@ -23,3 +25,6 @@ typedef struct {
     enum ParticleType type;
     bool active;
 } Particle;
+
+float GetRandomFloat(float min, float max); // is this too much to ask for raylib :-( ....
+const char* EnumAsPChr(ParticleType type);

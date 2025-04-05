@@ -3,6 +3,7 @@
 #include "stdlib.h"
 
 #include "sparks.h"
+#include "fire.h"
 #include "common/particle.h"
 #include "common/common.h"
 
@@ -12,21 +13,17 @@ int main(void)
     //--------------------------------------------------------------------------------------
     
 
-    InitWindow(screenWidth, screenHeight, "raylib particle system simulator e");
+    InitWindow(screenWidth, screenHeight, "raylib particle system simulator");
 
     int blending = BLEND_ADDITIVE;
 
     SetTargetFPS(200);
+    InitParticleSystems();
+    // InitFire((Vector2){ 0, 0 });
     InitSparks((Vector2){ 0, 0 });
     // main update loop
     while (!WindowShouldClose())    // detect window close button or ESC key
     {
-        // Update
-        //----------------------------------------------------------------------------------
-        // Activate one particle every frame and Update active particles
-        // NOTE: Particles initial position should be mouse position when activated
-        // NOTE: Particles fall down with gravity and rotation... and disappear after 2 seconds (alpha = 0)
-        // NOTE: When a particle disappears, active = false and it can be reused.
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
@@ -48,6 +45,7 @@ int main(void)
 
             // For sparks that follow your cursor
             UpdateSparks();
+            // UpdateFire();
             // For sparks that have been placed down into a particle system
             UpdateParticleSystem();
 

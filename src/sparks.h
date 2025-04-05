@@ -5,6 +5,6 @@
 #include <string.h> // memcpy
 
 void InitSparks(Vector2 pos);
-void InitPhysics(Particle* pParticle, ParticleSystem* pParticleSystem);
-void ApplyPhysics(Particle* pParticle);
+void InitSparksPhysics(Particle* pParticle, ParticleSystem* pParticleSystem);
+void ApplySparksPhysics(Particle* pParticle);
 void UpdateSparks();
