@@ -8,3 +8,4 @@ void InitFire(Vector2 pos);
 void InitFirePhysics(Particle* pParticle, ParticleSystem* pParticleSystem);
 void ApplyFirePhysics(Particle* pParticle);
 void UpdateFire();
+void DrawFire(Particle particle);

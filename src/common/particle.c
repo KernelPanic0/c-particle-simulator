@@ -13,7 +13,6 @@ Particle particlePool[MAX_PARTICLES] = {};
 void AddToParticleSystem(Vector2 position, ParticleType type) {
     if (particleSystemsCount != MAX_PARTICLE_SYSTEMS) {
         ParticleSystem newParticleSystem;
-        particlePool->type = type;
         memcpy(newParticleSystem.systemParticlePool, particlePool, sizeof(Particle) * MAX_PARTICLES); // replace newParticleSystem.particlePool with particlePool. Copies all bytes.
         newParticleSystem.position = position;
         newParticleSystem.type = type;
@@ -35,7 +34,6 @@ void InitParticleSystems() {
 
 void UpdateParticleSystem() {
     for (int i = 0; i < particleSystemsCount; i++) {
-        // if (i > 0 && i == particleSystemsCount) return; // might cause bug
         Particle* pParticlePool = particleSystems[i].systemParticlePool;
         for (int i2 = 0; i2 < MAX_PARTICLES; i2++)
         {
@@ -43,7 +41,7 @@ void UpdateParticleSystem() {
             {
                 pParticlePool[i2].active = true;
                 // Reinstantiate physics application
-                switch (pParticlePool[i2].type) {
+                switch (particleSystems[i].type) {
                     case PARTICLE_SPARKS:
                         InitSparksPhysics(&pParticlePool[i2], &particleSystems[i]); // pass in as pointer 
                         break;
@@ -56,23 +54,27 @@ void UpdateParticleSystem() {
             }
         }
         float deltaTime = GetFrameTime(); // time between current and previous frame
-        for (int i = 0; i < MAX_PARTICLES; i++)
+        for (int i2 = 0; i2 < MAX_PARTICLES; i2++)
         {           
-                if (pParticlePool[i].active)
-                {
-                    // apply physics to particle
-                    ApplySparksPhysics(&pParticlePool[i]);
-                    pParticlePool[i].alpha -= 0.01f;
-    
-                    if (pParticlePool[i].alpha <= 0.0f) pParticlePool[i].active = false; 
+            if (pParticlePool[i2].active)
+            {
+                if (pParticlePool[i2].alpha <= 0.0f) pParticlePool[i2].active = false; 
+                // apply physics to particle
+                switch (particleSystems[i].type) {
+                    case PARTICLE_SPARKS:
+                        ApplySparksPhysics(&pParticlePool[i2]); 
+                        pParticlePool[i2].alpha -= 0.01f;
+                        pParticlePool[i2].color.a = (pParticlePool[i2].alpha * 255); 
+                        DrawSparks(pParticlePool[i2]);
+                        break;
+                    case PARTICLE_FIRE:
+                        ApplyFirePhysics(&pParticlePool[i2]);
+                        DrawFire(pParticlePool[i2]);
+                        break;
+                }
+                
             }
-        }
-
-        
-        // Draw active particles
-        for (int i = 0; i < MAX_PARTICLES; i++)
-        {
-            if (pParticlePool[i].active) DrawRectangleV(pParticlePool[i].position, (Vector2){ 3, 3 }, pParticlePool[i].color);
         }
     }
 }
+

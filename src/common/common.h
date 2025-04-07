@@ -18,13 +18,25 @@ typedef enum ParticleType {
 typedef struct {
     Vector2 position;
     Vector2 velocity;
+    Color initialColor;
+    Color finalColor;
     Color color;
     float alpha;
-    float size;
+    Vector2 initialSize;
+    Vector2 size;
     float rotation;
     enum ParticleType type;
     bool active;
 } Particle;
+
+typedef struct {
+    Vector2 position;
+    Vector2 size;
+    float rotation;
+    Color color;
+} ParticleDrawParams;
+
+void DrawFireParticle(ParticleDrawParams params);
 
 float GetRandomFloat(float min, float max); // is this too much to ask for raylib :-( ....
 const char* EnumAsPChr(ParticleType type);

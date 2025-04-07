@@ -8,3 +8,4 @@ void InitSparks(Vector2 pos);
 void InitSparksPhysics(Particle* pParticle, ParticleSystem* pParticleSystem);
 void ApplySparksPhysics(Particle* pParticle);
 void UpdateSparks();
+void DrawSparks(Particle particle);
